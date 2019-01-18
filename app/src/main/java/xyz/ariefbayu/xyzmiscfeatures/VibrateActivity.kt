@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_vibrate.*
 
@@ -16,18 +17,22 @@ class VibrateActivity : AppCompatActivity() {
         setContentView(R.layout.activity_vibrate)
 
         val vibrate = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        val canVirate = vibrate.hasVibrator()
+        val canVibrate = vibrate.hasVibrator()
 
-        if(canVirate) {
-            btnVibrateOnce.setOnClickListener {
+        btnVibrateOnce.setOnClickListener {
+            if(canVibrate) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     vibrate.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
                 } else {
                     vibrate.vibrate(100)
                 }
+            } else {
+                Toast.makeText(this, "No vibration support", Toast.LENGTH_LONG).show()
             }
+        }
 
-            btnVibrateEffect.setOnClickListener {
+        btnVibrateEffect.setOnClickListener {
+            if(canVibrate) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     val pattern = longArrayOf(0, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100, 100, 100)
                     val effect = VibrationEffect.createWaveform(pattern, -1)
@@ -35,8 +40,9 @@ class VibrateActivity : AppCompatActivity() {
                 } else {
                     vibrate.vibrate(100)
                 }
+            } else {
+                Toast.makeText(this, "No vibration support", Toast.LENGTH_LONG).show()
             }
         }
     }
-
 }
